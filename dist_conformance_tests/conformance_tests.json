@@ -1,0 +1,186 @@
+{
+    "1.1": {
+        "folder_name": "conformance_tests/health_check_endpoint",
+        "functional_requirement": "- Implement :Endpoint: \"/health_check\" that only checks if :API: can be invoked.",
+        "acceptance_tests": [
+            "- :AcceptanceTests: should send a GET request to :Endpoint: \"/health_check\" and expect a 200 status code."
+        ],
+        "test_summary": [
+            {
+                "test_name": "health_check_returns_200_status_code",
+                "test_contents": "This is the acceptance test that verifies the fundamental requirement: the /health_check endpoint is accessible and can be invoked successfully. The test makes a GET request to the /health_check endpoint and expects to receive a 200 OK HTTP status code. If the request fails or returns a different status code, the test fails with detailed error information including the received status code, status text, and error message."
+            },
+            {
+                "test_name": "health_check_response_contains_required_fields",
+                "test_contents": "This test verifies that the /health_check endpoint response contains exactly three required fields: 'status', 'timestamp', and 'service'. The test makes a GET request to the endpoint, checks that the response is a 200 OK, validates that the response body is a defined object, and then verifies that all three required fields are present and defined. Additionally, it ensures that no extra fields are present in the response by checking that the total number of fields is exactly three."
+            },
+            {
+                "test_name": "health_check_status_field_value",
+                "test_contents": "This test verifies that the 'status' field in the /health_check endpoint response has the exact string value 'ok'. The test makes a GET request to the endpoint, checks that the response is a 200 OK, validates that the response body and status field are defined, and then verifies that the status field contains the string 'ok' and is of type string."
+            },
+            {
+                "test_name": "health_check_timestamp_format",
+                "test_contents": "This test verifies that the 'timestamp' field in the /health_check endpoint response is a valid ISO 8601 formatted date-time string. The test makes a GET request to the endpoint, checks that the response is a 200 OK, validates that the timestamp field is defined and is a string, and then verifies that it matches the ISO 8601 pattern (YYYY-MM-DDTHH:mm:ss.sssZ). Additionally, it validates that the timestamp can be parsed as a valid JavaScript Date object and that the parsed date's ISO string representation matches the original timestamp value."
+            },
+            {
+                "test_name": "health_check_service_field_value",
+                "test_contents": "This test verifies that the 'service' field in the /health_check endpoint response has the exact string value 'api'. The test makes a GET request to the endpoint, checks that the response is a 200 OK, validates that the response body and service field are defined, and then verifies that the service field contains the string 'api' and is of type string."
+            },
+            {
+                "test_name": "health_check_response_content_type",
+                "test_contents": "This test verifies that the /health_check endpoint response includes the correct Content-Type header indicating JSON format. The test makes a GET request to the endpoint, checks that the response is a 200 OK, validates that the response headers and Content-Type header are defined, and then verifies that the Content-Type header contains the string 'application/json'."
+            },
+            {
+                "test_name": "health_check_response_time",
+                "test_contents": "This test verifies that the /health_check endpoint responds within an acceptable time frame of 5 seconds. The test records the start time before making a GET request to the endpoint, then records the end time after receiving the response. It calculates the response time by subtracting the start time from the end time, checks that the response is a 200 OK, and verifies that the total response time is less than 5000 milliseconds (5 seconds)."
+            }
+        ]
+    },
+    "1.2": {
+        "folder_name": "conformance_tests/create_user_endpoint",
+        "functional_requirement": "- Implement :Endpoint: \"POST /users\" that creates a new user.",
+        "acceptance_tests": [
+            "- You should successfully create a new user with the following data:\n  - name: \"John Doe\"\n  - email: \"john.doe@example.com\"\n  - password: \"password\""
+        ],
+        "test_summary": [
+            {
+                "test_name": "post_users_missing_name_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'name' field is missing from the request body. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'name' and 'required'), field: 'name'}. The test sends a request with only email and password fields."
+            },
+            {
+                "test_name": "post_users_empty_name_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'name' field is an empty string. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'name' and 'empty'), field: 'name'}. The test sends a request with name set to empty string ''."
+            },
+            {
+                "test_name": "post_users_name_exceeds_255_characters_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'name' field exceeds 255 characters. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'name' and '255'), field: 'name'}. The test sends a request with a name containing 256 'a' characters."
+            },
+            {
+                "test_name": "post_users_missing_email_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'email' field is missing from the request body. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'email' and 'required'), field: 'email'}. The test sends a request with only name and password fields."
+            },
+            {
+                "test_name": "post_users_invalid_email_format_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'email' field has an invalid format. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'email' and 'valid'), field: 'email'}. The test sends a request with email set to 'notanemail' which lacks proper email structure."
+            },
+            {
+                "test_name": "post_users_email_exceeds_255_characters_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'email' field exceeds 255 characters. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'email' and '255'), field: 'email'}. The test sends a request with an email containing 250 'a' characters followed by '@example.com'."
+            },
+            {
+                "test_name": "post_users_missing_password_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'password' field is missing from the request body. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'password' and 'required'), field: 'password'}. The test sends a request with only name and email fields."
+            },
+            {
+                "test_name": "post_users_password_less_than_8_characters_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'password' field is less than 8 characters. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'password' and '8'), field: 'password'}. The test sends a request with password set to 'pass123' which is only 7 characters."
+            },
+            {
+                "test_name": "post_users_password_exceeds_255_characters_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the 'password' field exceeds 255 characters. Expected error response structure: {status: 'error', error: 'validation_error', message: (contains 'password' and '255'), field: 'password'}. The test sends a request with a password containing 256 'a' characters."
+            },
+            {
+                "test_name": "post_users_duplicate_email_returns_409",
+                "test_contents": "Verifies that POST /users returns 409 status code when attempting to create a user with an email that already exists in the database. Expected error response structure: {status: 'error', error: 'duplicate_email', message: (contains 'email' and 'exists'), field: 'email'}. The test first creates a user with a unique email, then attempts to create another user with the same email address."
+            },
+            {
+                "test_name": "post_users_duplicate_email_error_response_structure",
+                "test_contents": "Verifies the exact structure and content of the error response when attempting to create a user with a duplicate email. Expected response must have properties: status, error, message, and field. Values must be: status='error', error='duplicate_email', field='email', and message must contain the duplicate email address. The test creates a user, then attempts to create another with the same email and validates the complete error response structure."
+            },
+            {
+                "test_name": "post_users_invalid_json_body_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the request body contains invalid JSON syntax. Expected error response must have an 'error' property containing the word 'invalid'. The test sends a request with malformed JSON string '{invalid json}' with Content-Type header set to 'application/json'."
+            },
+            {
+                "test_name": "post_users_non_object_body_returns_400",
+                "test_contents": "Verifies that POST /users returns 400 status code when the request body is not a JSON object (e.g., an array or primitive). Expected error response structure: {status: 'error', error: 'invalid_request', message: (contains 'object')}. The test sends a request with a JSON array ['not', 'an', 'object'] instead of an object."
+            },
+            {
+                "test_name": "successfully_create_user_with_valid_data",
+                "test_contents": "Verifies successful user creation with valid input data. The test sends a POST request with valid name='John Doe', email=(unique timestamp-based email), and password='password'. Expected response: status code 201, response structure {status: 'success', data: {...}}, where data contains: id (valid UUID format), name (matches input), email (matches input, case-insensitive), created_at (valid ISO 8601 timestamp, recent), updated_at (valid ISO 8601 timestamp, recent). The response must NOT contain a password field. Timestamps must be within 5 minutes of current time and created_at/updated_at must be within 1 second of each other for new users."
+            }
+        ]
+    },
+    "1.3": {
+        "folder_name": "conformance_tests/get_user_by_id_endpoint",
+        "functional_requirement": "- Implement :Endpoint: \"GET /users/{id}\" that retrieves a user by their ID.",
+        "acceptance_tests": [
+            "- Test \"GET /users/{id}\" with the following flow:\n  - Firstly, create a new user with the following data:\n    - name: \"John Doe\"\n    - email: \"john.doe@example.com\"\n    - password: \"password\"\n  - Then, retrieve the user by their ID and expect a 200 status code. Test that `name` and `email` are correctly retrieved."
+        ],
+        "test_summary": [
+            {
+                "test_name": "acceptance_test_create_and_retrieve_user",
+                "test_contents": "End-to-end acceptance test that validates the complete user lifecycle:\n1. Creates a new user with name 'John Doe', unique timestamped email, and password\n2. Verifies the creation response has status 201 and contains a user ID\n3. Retrieves the created user by ID using GET /users/{id}\n4. Verifies the retrieval response has status 200\n5. Validates the response structure contains 'status' field set to 'success' and 'data' object\n6. Confirms the retrieved user's name matches the created name\n7. Confirms the retrieved user's email matches the created email\n8. Confirms the retrieved user's ID matches the created ID\n9. Verifies that 'created_at' and 'updated_at' fields are present\n10. Ensures the 'password' field is NOT present in the response"
+            },
+            {
+                "test_name": "get_users_by_id_response_structure",
+                "test_contents": "Validates the exact structure of a successful GET /users/{id} response:\n1. Creates a test user\n2. Retrieves the user by ID\n3. Verifies HTTP status code is 200\n4. Confirms the response body is a defined object\n5. Validates exactly two top-level properties exist: 'status' and 'data'\n6. Confirms the 'data' property is a defined object\n7. Validates the 'data' object contains exactly five properties: 'id', 'name', 'email', 'created_at', 'updated_at'\n8. Ensures all five properties are defined (not null or undefined)"
+            },
+            {
+                "test_name": "get_users_by_id_response_status_field",
+                "test_contents": "Validates the 'status' field in a successful response:\n1. Creates a test user named 'Jane Smith'\n2. Retrieves the user by ID\n3. Verifies HTTP status code is 200\n4. Confirms the 'status' field is defined\n5. Validates the 'status' field is of type string\n6. Verifies the 'status' field value equals 'success'"
+            },
+            {
+                "test_name": "get_users_by_id_with_invalid_uuid_format_returns_400",
+                "test_contents": "Tests error handling for invalid UUID format:\n1. Attempts to retrieve a user with an invalid UUID string 'not-a-valid-uuid'\n2. Expects the request to fail with HTTP status 400\n3. Validates the error response contains an 'error' field set to 'validation_error'\n4. Verifies the 'message' field is defined and is a string\n5. Confirms the message contains the word 'uuid' (case-insensitive)\n6. Confirms the message contains either 'valid' or 'invalid' (case-insensitive)"
+            },
+            {
+                "test_name": "get_users_by_id_invalid_uuid_error_structure",
+                "test_contents": "Validates the complete error response structure for invalid UUID format:\n1. Attempts to retrieve a user with invalid UUID 'invalid-uuid-format'\n2. Expects HTTP status 400\n3. Validates the error response contains exactly four properties: 'status', 'error', 'message', 'field'\n4. Verifies 'status' field equals 'error' and is a string\n5. Verifies 'error' field equals 'validation_error' and is a string\n6. Verifies 'field' field equals 'id' and is a string\n7. Verifies 'message' field is defined and is a string"
+            },
+            {
+                "test_name": "get_users_by_id_with_nonexistent_uuid_returns_404",
+                "test_contents": "Tests error handling for valid UUID format but non-existent user:\n1. Uses a valid UUID format '123e4567-e89b-12d3-a456-426614174000' that doesn't exist in the database\n2. Attempts to retrieve the user by this ID\n3. Expects the request to fail with HTTP status 404\n4. Validates the error response contains an 'error' field set to 'user_not_found'"
+            },
+            {
+                "test_name": "get_users_by_id_not_found_error_structure",
+                "test_contents": "Validates the complete error response structure for non-existent user:\n1. Uses a valid UUID format '987e6543-e21b-45d3-a654-123456789abc' that doesn't exist\n2. Attempts to retrieve the user by this ID\n3. Expects HTTP status 404\n4. Validates the error response is a defined object\n5. Confirms at least three properties exist: 'status', 'error', 'message'\n6. Verifies 'status' field equals 'error' and is a string\n7. Verifies 'error' field equals 'user_not_found' and is a string\n8. Verifies 'message' field is a string and contains the non-existent UUID"
+            },
+            {
+                "test_name": "get_users_by_id_response_does_not_contain_password",
+                "test_contents": "Security test ensuring password is never exposed:\n1. Creates a test user 'Bob Johnson' with password 'secretPassword789'\n2. Retrieves the user by ID\n3. Verifies HTTP status code is 200\n4. Confirms the 'data' object is defined\n5. Validates the 'data' object does NOT have a 'password' property using hasOwnProperty check\n6. Confirms 'password' is not in the list of object keys"
+            },
+            {
+                "test_name": "get_users_by_id_timestamps_are_iso8601_format",
+                "test_contents": "Validates timestamp format compliance:\n1. Creates a test user 'Alice Williams'\n2. Retrieves the user by ID\n3. Verifies HTTP status code is 200\n4. For 'created_at' field:\n   - Confirms it is defined and is a string\n   - Validates it matches ISO 8601 pattern (YYYY-MM-DDTHH:mm:ss.sssZ)\n   - Verifies it can be parsed as a valid Date object\n   - Confirms Date.toISOString() returns the exact same string\n5. For 'updated_at' field:\n   - Confirms it is defined and is a string\n   - Validates it matches ISO 8601 pattern (YYYY-MM-DDTHH:mm:ss.sssZ)\n   - Verifies it can be parsed as a valid Date object\n   - Confirms Date.toISOString() returns the exact same string"
+            }
+        ]
+    },
+    "1.4": {
+        "folder_name": "conformance_tests/delete_user_by_id_endpoint",
+        "functional_requirement": "- Implement :Endpoint: \"DELETE /users/{id}\" that deletes a user by their ID.",
+        "acceptance_tests": [
+            "- Test \"DELETE /users/{id}\" with the following flow:\n  - Firstly, create a new user with the following data:\n    - name: \"John Doe\"\n    - email: \"john.doe@example.com\"\n    - password: \"password\"\n  - Then, delete the user by their ID and expect a 200 status code.\n  - Make request to \"GET /users/{id}\". Expect user to not exist."
+        ],
+        "test_summary": [
+            {
+                "test_name": "delete_users_by_id_with_invalid_uuid_format_returns_400",
+                "test_contents": "Test verifies that DELETE /users/{id} returns HTTP 400 Bad Request when provided with an invalid UUID format (e.g., 'not-a-valid-uuid'). The response must contain an error field set to 'validation_error', a message field that is a string containing both 'uuid' and 'valid' or 'invalid' keywords (case-insensitive). This ensures proper input validation before attempting database operations."
+            },
+            {
+                "test_name": "delete_users_by_id_invalid_uuid_error_structure",
+                "test_contents": "Test validates the complete error response structure when an invalid UUID format is provided. The response must return HTTP 400 and contain exactly 4 properties: 'status' (string, value 'error'), 'error' (string, value 'validation_error'), 'message' (string, defined), and 'field' (string, value 'id'). This ensures consistent error response formatting for validation failures."
+            },
+            {
+                "test_name": "delete_users_by_id_with_nonexistent_uuid_returns_404",
+                "test_contents": "Test verifies that DELETE /users/{id} returns HTTP 404 Not Found when provided with a valid UUID format that does not correspond to any existing user in the database (e.g., '123e4567-e89b-12d3-a456-426614174000'). The response must contain an error field set to 'user_not_found'. This distinguishes between validation errors and resource not found errors."
+            },
+            {
+                "test_name": "delete_users_by_id_not_found_error_structure",
+                "test_contents": "Test validates the error response structure when attempting to delete a non-existent user. The response must return HTTP 404 and contain at least 3 properties: 'status' (string, value 'error'), 'error' (string, value 'user_not_found'), and 'message' (string containing the requested UUID '987e6543-e21b-45d3-a654-123456789abc'). This ensures the error message provides context about which resource was not found."
+            },
+            {
+                "test_name": "delete_users_by_id_response_has_no_content_body",
+                "test_contents": "Test verifies successful deletion behavior. First, a test user is created with a unique email. Then DELETE /users/{id} is called with the created user's ID. The response must return HTTP 204 No Content status and have an empty body (undefined, null, empty string, or empty object). This follows REST conventions for successful DELETE operations that don't return content."
+            },
+            {
+                "test_name": "delete_users_by_id_idempotency_second_delete_returns_404",
+                "test_contents": "Test verifies idempotent behavior of the DELETE endpoint. A test user is created, then deleted successfully (expecting HTTP 204). When the same DELETE request is made a second time with the same user ID, it must return HTTP 404 Not Found with error field set to 'user_not_found'. This demonstrates that the endpoint properly handles repeated delete requests and doesn't fail unexpectedly when the resource is already gone."
+            },
+            {
+                "test_name": "should successfully delete a user and verify user no longer exists",
+                "test_contents": "End-to-end acceptance test that validates the complete delete user workflow. Step 1: Creates a new user via POST /users with unique email and verifies the user ID is returned. Step 2: Deletes the user via DELETE /users/{id} and verifies HTTP 204 response with empty body. Step 3: Attempts to retrieve the deleted user via GET /users/{id} and verifies it returns HTTP 404 with error 'user_not_found', status 'error', and a message containing the user ID. This confirms the user was actually removed from the database and is no longer accessible."
+            }
+        ]
+    }
+}

@@ -1,0 +1,485 @@
+openapi: 3.0.3
+info:
+  title: API Project
+  description: API with health check and user management endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+paths:
+  /health_check:
+    get:
+      summary: Health check endpoint
+      description: Checks if the API can be invoked and is operational
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API is operational
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                  - service
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                    description: Health status of the API
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of the health check
+                    example: '2025-11-25T10:30:00.000Z'
+                  service:
+                    type: string
+                    description: Name of the service
+                    example: api
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    example: health_check_failed
+                  message:
+                    type: string
+                    example: Health check endpoint encountered an error
+                  details:
+                    type: string
+                    description: Detailed error message for debugging
+  /users:
+    post:
+      summary: Create a new user
+      description: Creates a new user account with name, email, and password
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  description: User's full name
+                  minLength: 1
+                  maxLength: 255
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  description: User's email address (must be unique)
+                  maxLength: 255
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  description: User's password (minimum 8 characters)
+                  minLength: 8
+                  maxLength: 255
+                  example: securePassword123
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                    example: success
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - name
+                      - email
+                      - created_at
+                      - updated_at
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: Unique user identifier
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      name:
+                        type: string
+                        description: User's full name
+                        example: John Doe
+                      email:
+                        type: string
+                        format: email
+                        description: User's email address
+                        example: john@example.com
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when user was created
+                        example: '2025-11-25T10:00:00.000Z'
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when user was last updated
+                        example: '2025-11-25T10:00:00.000Z'
+        '400':
+          description: Validation error - invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [validation_error, invalid_request]
+                    example: validation_error
+                  message:
+                    type: string
+                    example: Email must be a valid email address
+                  field:
+                    type: string
+                    description: The field that failed validation
+                    example: email
+        '409':
+          description: Conflict - email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                  - field
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [duplicate_email]
+                    example: duplicate_email
+                  message:
+                    type: string
+                    example: User with email 'john@example.com' already exists
+                  field:
+                    type: string
+                    example: email
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    example: internal_server_error
+                  message:
+                    type: string
+                    example: An unexpected error occurred while creating user
+                  details:
+                    type: string
+                    description: Detailed error message for debugging
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      description: Retrieves a user's information by their unique identifier
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique user identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                    example: success
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - name
+                      - email
+                      - created_at
+                      - updated_at
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: Unique user identifier
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      name:
+                        type: string
+                        description: User's full name
+                        example: John Doe
+                      email:
+                        type: string
+                        format: email
+                        description: User's email address
+                        example: john@example.com
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when user was created
+                        example: '2025-11-25T10:00:00.000Z'
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when user was last updated
+                        example: '2025-11-25T10:00:00.000Z'
+        '400':
+          description: Validation error - invalid user ID format
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [validation_error]
+                    example: validation_error
+                  message:
+                    type: string
+                    example: User ID must be a valid UUID
+                  field:
+                    type: string
+                    description: The field that failed validation
+                    example: id
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [user_not_found]
+                    example: user_not_found
+                  message:
+                    type: string
+                    example: User with ID '123e4567-e89b-12d3-a456-426614174000' not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    example: internal_server_error
+                  message:
+                    type: string
+                    example: An unexpected error occurred while retrieving user
+                  details:
+                    type: string
+                    description: Detailed error message for debugging
+    delete:
+      summary: Delete a user by ID
+      description: Deletes a user from the system by their unique identifier
+      operationId: deleteUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique user identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '204':
+          description: User deleted successfully (no content)
+        '400':
+          description: Validation error - invalid user ID format
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [validation_error]
+                    example: validation_error
+                  message:
+                    type: string
+                    example: User ID must be a valid UUID
+                  field:
+                    type: string
+                    description: The field that failed validation
+                    example: id
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [user_not_found]
+                    example: user_not_found
+                  message:
+                    type: string
+                    example: User with ID '123e4567-e89b-12d3-a456-426614174000' not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    example: internal_server_error
+                  message:
+                    type: string
+                    example: An unexpected error occurred while deleting user
+                  details:
+                    type: string
+                    description: Detailed error message for debugging
+        '503':
+          description: Service unavailable - database connection error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [error]
+                    example: error
+                  error:
+                    type: string
+                    enum: [database_unavailable]
+                    example: database_unavailable
+                  message:
+                    type: string
+                    example: Unable to connect to database
+                  details:
+                    type: string
+                    description: Detailed error message for debugging
+tags:
+  - name: Health
+    description: Health check operations
+  - name: Users
+    description: User management operations
