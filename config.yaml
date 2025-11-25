@@ -1,0 +1,4 @@
+unittests-script: run_unittests_jest.sh
+conformance-tests-script: run_conformance_tests_jest.sh
+verbose: true # verbose flag, defaults to false if not set
+dry-run: false
