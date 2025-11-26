@@ -55,7 +55,7 @@
 
 - Implement :Endpoint: "/health_check" that only checks if :API: can be invoked.
 
-- Implement a service that communicates with :Database: to create, retrieve, and delete :Users:.
+- Implement a service that communicates with :Database: to create, retrieve, and delete users.
 
 - Implement :Endpoint: "POST /users" that creates a new user.
 
