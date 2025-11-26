@@ -35,6 +35,8 @@
 
 - For every implemented :Endpoint: in :Implementation:, you should update :OpenAPISpec: with the new endpoint.
 
+- :UnitTests: should be runnable without :API: being running.
+
 ***Test Requirements:***
 
 - :ConformanceTests: will be executed using the "npm test" command. The command "npm test" should be accessible in the `package.json` file of :ConformanceTests:.
