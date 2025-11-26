@@ -1,6 +1,6 @@
 # Users Management API
 
-This project provides a RESTful API for managing users (stores users in a database). It is built from the ***plain specification [users-management-api.plain](users-management-api.plain).
+This project provides a RESTful API for managing users (stores users in a database). It is built from the ***plain specification [user-management-api.plain](user-management-api.plain).
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ you should see `users` table:
 
 ```
        List of relations
- Schema | Name  | Type  | Owner 
+ Schema | Name  | Type  | Owner
 --------+-------+-------+-------
  public | users | table | user
 (1 row)
@@ -50,7 +50,7 @@ you should see `users` table:
 ## Rendering the project
 
 You need to set `PLAIN2CODE_RENDERER_DIR` environmental variable to the directory containing the plain2code.py script.
- 
+
 Then run
 
 ```

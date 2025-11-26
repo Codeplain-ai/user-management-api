@@ -18,7 +18,7 @@
 
 - :API: should use express.js framework.
 
-- :Implementation: of :SnapIn: must be in TypeScript.
+- :Implementation: of :API: must be in TypeScript.
   - :Implementation: should use the TypeScript target language version es2017 with configuration settings for module interoperability, strict type checking, declaration file generation, and JSON module support.
 
 - :Implementation: will run on Node.js as the runtime environment.
@@ -55,38 +55,10 @@
 
 - Implement :Endpoint: "/health_check" that only checks if :API: can be invoked.
 
-  ***Acceptance Tests:***
-
-  - :AcceptanceTests: should send a GET request to :Endpoint: "/health_check" and expect a 200 status code.
+- Implement a service that communicates with :Database: to create, retrieve, and delete :Users:.
 
 - Implement :Endpoint: "POST /users" that creates a new user.
 
-  ***Acceptance Tests:***
-
-  - You should successfully create a new user with the following data:
-    - name: "John Doe"
-    - email: "john.doe@example.com"
-    - password: "password"
-
 - Implement :Endpoint: "GET /users/{id}" that retrieves a user by their ID.
 
-  ***Acceptance Tests:***
-
-  - Test "GET /users/{id}" with the following flow:
-    - Firstly, create a new user with the following data:
-      - name: "John Doe"
-      - email: "john.doe@example.com"
-      - password: "password"
-    - Then, retrieve the user by their ID and expect a 200 status code. Test that `name` and `email` are correctly retrieved.
-
 - Implement :Endpoint: "DELETE /users/{id}" that deletes a user by their ID.
-
-  ***Acceptance Tests:***
-
-  - Test "DELETE /users/{id}" with the following flow:
-    - Firstly, create a new user with the following data:
-      - name: "John Doe"
-      - email: "john.doe@example.com"
-      - password: "password"
-    - Then, delete the user by their ID and expect a 200 status code.
-    - Make request to "GET /users/{id}". Expect user to not exist.
