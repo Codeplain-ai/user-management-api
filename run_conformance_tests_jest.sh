@@ -20,6 +20,15 @@ check_and_kill_processed_on_port() {
     fi
 }
 
+validate_traffic_on_port() {
+    local port=${1:-5433}  # Default to port 5433 if no port is provided
+    # if there's no traffic running on the given port, exit with 69
+    if ! lsof -i :$port > /dev/null 2>&1; then
+        printf "No traffic running on port $port. Exiting...\n"
+        exit 69
+    fi
+}
+
 # Function to get all child processes of a given PID and store them in a list
 get_children() {
     local parent_pid=$1
@@ -70,6 +79,7 @@ trap cleanup EXIT SIGINT SIGTERM
 
 # Check for and kill any existing servers from previous runs
 check_and_kill_processed_on_port 8000
+validate_traffic_on_port 5433
 
 # Check if build folder name is provided
 if [ -z "$1" ]; then
