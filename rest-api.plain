@@ -1,0 +1,26 @@
+***Definitions:***
+
+- :API: is a TypeScript Node.js application.
+  - :API: should run on port 8000.
+
+***Non-Functional Requirements:***
+
+- :API: must be implemented in TypeScript with target language version es2017 with configuration settings for module interoperability, strict type checking, declaration file generation, and JSON module support.
+
+- :API: will run on Node.js as the runtime environment and use express.js framework for impkementing the Restful API.
+
+- :Implementation: is going to be ran with `npm run dev` command.
+
+- :UnitTests: are going to be executed using the "npm test" command. The command "npm test" should be accessible in the `package.json` file of :UnitTests:.
+
+***Test Requirements:***
+
+- :ConformanceTests: will be executed using the "npm test" command. The command "npm test" should be accessible in the `package.json` file of :ConformanceTests:.
+
+- All test files from :ConformanceTests: must use the `.test.ts` suffix to be discoverable by Jest's default test pattern matching.
+
+- :ConformanceTests: use externally provided `jest.setup.js` file.
+
+- :ConformanceTests: should test :Implementation: by making HTTP requests to :API:.
+
+- :ConformanceTests: should assume :API: is already running and accessible at `http://localhost:8000`. This should not be tested.
