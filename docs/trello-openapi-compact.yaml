@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  title: Trello REST API
+  version: 0.0.1
+  description: >-
+    This document contains information about how to authenticate with the Trello
+    API.
+servers:
+  - url: 'https://api.trello.com/1/'
+components:
+  securitySchemes:
+    APIKey:
+      type: apiKey
+      in: query
+      name: key
+    APIToken:
+      in: query
+      name: token
+      type: apiKey
+  schemas: {}
+security:
+  - APIKey: []
+    APIToken: []
+paths:
+  '/members/{id}':
+    get:
+      description: Get a member
+      parameters:
+        - id
+        - actions
+        - boards
+        - boardBackgrounds
+        - boardsInvited
+        - boardsInvited_fields
+        - boardStars
+        - cards
+        - customBoardBackgrounds
+        - customEmoji
+        - customStickers
+        - fields
+        - notifications
+        - organizations
+        - organization_fields
+        - organization_paid_account
+        - organizationsInvited
+        - organizationsInvited_fields
+        - paid_account
+        - savedSearches
+        - tokens
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Member'
+        '429':
+          description: Rate limit exceeded.
+          headers:
+            Retry-After:
+              description: |-
+                An HTTP-date string (RFC 7231) indicating when to retry the request.
+                Example: 'Wed, 21 Oct 2015 07:28:00 GMT'
+              schema:
+                type: string
+  '/members/{id}/boards':
+    get:
+      description: Lists the boards that the user is a member of.
+      parameters:
+        - id
+        - filter
+        - fields
+        - lists
+        - organization
+        - organization_fields
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Board'
+              examples:
+                sample:
+                  summary: Example response
+                  value:
+                    - id: "exampleBoardId"
+                      nodeId: "ari:cloud:trello::board/workspace/exampleOrgId/exampleBoardId"
+                      name: "Example Board Name"
+                      desc: ""
+                      descData: null
+                      closed: false
+                      dateClosed: null
+                      idOrganization: "exampleOrgId"
+                      idEnterprise: null
+                      pinned: false
+                      starred: false
+                      url: "https://trello.com/b/exampleShortLink/example-board-name"
+                      shortLink: "exampleShortLink"
+                      subscribed: false
+                      labelNames:
+                        green: ""
+                        yellow: ""
+                        orange: ""
+                      powerUps: []
+                      dateLastActivity: "2025-03-26T12:04:13.067Z"
+                      dateLastView: "2025-06-06T06:07:13.134Z"
+                      shortUrl: "https://trello.com/b/exampleShortLink"
+                      idTags: []
+                      datePluginDisable: null
+                      creationMethod: null
+                      ixUpdate: "1"
+                      templateGallery: null
+                      enterpriseOwned: false
+                      idBoardSource: null
+                      premiumFeatures:
+                        - "additionalBoardBackgrounds"
+                        - "additionalStickers"
+                        - "customBoardBackgrounds"
+                        - "customEmoji"
+                        - "customStickers"
+                        - "plugins"
+                      idMemberCreator: "exampleMemberId"
+                      type: null
+                      memberships:
+                        - id: "exampleMembershipId"
+                          idMember: "exampleMemberId"
+                          memberType: "admin"
+                          unconfirmed: false
+                          deactivated: false
+        '429':
+          description: Rate limit exceeded.
+          headers:
+            Retry-After:
+              description: |-
+                An HTTP date object indicating when to retry the request.
+              schema:
+                type: string
+                format: date-time
+  '/organizations/{id}/members?fields=fullName,avatarHash,username':
+    get:
+      description: List the members in a Workspace
+      parameters:
+        - id
+        - name: fields
+          in: query
+          description: >-
+            All or a comma-separated list of member fields to include in the response.
+            Valid values include: id, fullName, username, avatarHash, lastActive, etc.
+          required: false
+          schema:
+            type: string
+            example: "fullName,avatarHash,username"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Member'
+              examples:
+                sample:
+                  summary: Example response
+                  value:
+                    - id: "6752eb529b14a3446b75e69c"
+                      fullName: "SaaS Connectors"
+                      avatarHash: "66f803055e4e7070d6a1cc83cc06e6cd"
+                      username: "examplesaas1"
+                      lastActive: "2025-10-30T13:34:46.300Z"
+        '429':
+          description: Rate limit exceeded.
+          headers:
+            Retry-After:
+              description: |-
+                An HTTP-date string (RFC 7231) indicating when to retry the request.
+                Example: 'Wed, 21 Oct 2015 07:28:00 GMT'
+              schema:
+                type: string

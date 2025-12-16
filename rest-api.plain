@@ -3,6 +3,12 @@
 - :API: is a TypeScript Node.js application.
   - :API: should run on port 8000.
 
+- :TrelloAPI: is a RESTful API that provides access to the Trello API.
+
+- :Database: is a PostgreSQL databas e to which :API: should connect.
+
+- :Endpoint: is an endpoint of the :API:.
+
 ***Non-Functional Requirements:***
 
 - :API: must be implemented in TypeScript with target language version es2017 with configuration settings for module interoperability, strict type checking, declaration file generation, and JSON module support.
@@ -12,6 +18,13 @@
 - :Implementation: is going to be ran with `npm run dev` command.
 
 - :UnitTests: are going to be executed using the "npm test" command. The command "npm test" should be accessible in the `package.json` file of :UnitTests:.
+
+- :Database: is running locally on port 5433. Database URL is accessible at `postgresql://user:password@localhost:5433/mydb`.
+
+- :Database: was initialized with [migrations/01-create-users.sql](migrations/01-create-users.sql) file.
+    - This migration is read only. :Database: structure should not be changed.
+
+- :TrelloAPI: is defined in [docs/trello-openapi-compact.yaml](docs/trello-openapi-compact.yaml) file.
 
 ***Test Requirements:***
 
@@ -24,3 +37,23 @@
 - :ConformanceTests: should test :Implementation: by making HTTP requests to :API:.
 
 - :ConformanceTests: should assume :API: is already running and accessible at `http://localhost:8000`. This should not be tested.
+
+- The following credentials for :TrelloAPI: are accessible in the environment variables:
+  - TRELLO_API_KEY
+  - TRELLO_TOKEN
+  - TRELLO_ORGANIZATION_ID
+
+***Functional Requirements:***
+
+- Implement :Endpoint: "/health_check" that only checks if :API: can be invoked.
+
+- Implement :Endpoint: "GET /users" that retrieves all user entities from :Database:.
+
+- Implement :Endpoint: "POST /users" that creates a new user entity in :Database:.
+
+- Implement :Endpoint: "DELETE /users/{id}" that deletes a user entity from :Database:.
+
+- Implement :Endpoint: "GET /load_users" that loads all user from :TrelloAPI: and saves them to :Database:.
+  - Use /organizations/{id}/members endpoint to load all users from :TrelloAPI:.
+  - Use fields=fullName to get the full name of the user.
+  - The password and email should be generated randomly.

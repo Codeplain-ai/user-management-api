@@ -1,5 +1,17 @@
 #!/bin/bash
 
+EXEC_DIR="$(pwd)"
+
+# Source environment variables from .env file - look in execution directory
+if [ ! -f "$EXEC_DIR/.env" ]; then
+    printf "Error: .env file not found in $EXEC_DIR. Please ensure .env file exists with required environment variables.\n"
+    exit 69  # EXIT_SERVICE_UNAVAILABLE
+fi
+
+set -a  # automatically export all variables
+source "$EXEC_DIR/.env"
+set +a  # stop automatically exporting
+
 NPM_INSTALL_OUTPUT_FILTER="up to date in|added [0-9]* packages, removed [0-9]* packages, and changed [0-9]* packages in|removed [0-9]* packages, and changed [0-9]* packages in|added [0-9]* packages in|removed [0-9]* packages in"
 
 # ANSI escape code pattern to remove color codes and formatting from output
@@ -55,7 +67,7 @@ cleanup() {
     if [ ! -z "${API_PID+x}" ]; then
         local processes_to_kill=()
         get_children $API_PID
-        
+
         # Kill the main process
         kill -9 $API_PID > /dev/null 2>&1
 
@@ -117,7 +129,7 @@ fi
 if [ -d "$NODE_SUBFOLDER" ]; then
   # Find and delete all files and folders except "node_modules"
   find "$NODE_SUBFOLDER" -mindepth 1 ! -path "$NODE_SUBFOLDER/node_modules*" -exec rm -rf {} +
-  
+
   if [ "${VERBOSE:-}" -eq 1 ] 2>/dev/null; then
     printf "Cleanup completed, keeping 'node_modules'.\n"
   fi
@@ -196,7 +208,7 @@ fi
 if [ -d "$NODE_CONFORMANCE_TESTS_SUBFOLDER" ]; then
   # Find and delete all files and folders except "node_modules"
   find "$NODE_CONFORMANCE_TESTS_SUBFOLDER" -mindepth 1 ! -path "$NODE_CONFORMANCE_TESTS_SUBFOLDER/node_modules*" -exec rm -rf {} +
-  
+
   if [ "${VERBOSE:-}" -eq 1 ] 2>/dev/null; then
     printf "Cleanup completed, keeping 'node_modules'.\n"
   fi
