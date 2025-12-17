@@ -54,7 +54,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Install libraries
-npm install --silent
+npm install
 
 if [ "${VERBOSE:-}" -eq 1 ] 2>/dev/null; then
   printf "Building the application...\n"
@@ -62,7 +62,7 @@ fi
 
 build_output=$(mktemp)
 
-npm run build --loglevel silent > "$build_output" 2>&1
+npm run build > "$build_output" 2>&1
 
 if [ $? -ne 0 ]; then
   printf "Error: Building application.\n"
